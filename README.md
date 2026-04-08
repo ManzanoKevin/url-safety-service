@@ -45,13 +45,13 @@ pip install -r requirements.txt
 ### Option 1: Run directly
 
 ```bash
-python src/app/app.py
+python src/app/main.py
 ```
 
 ### Option 2: Run with uvicorn
 
 ```bash
-uvicorn src.app.app:app --host 0.0.0.0 --port 8000 --reload
+uvicorn src.app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
 The service will be available at: `http://localhost:8000`
@@ -128,22 +128,22 @@ Once the service is started, visit:
 ### Run all tests
 
 ```bash
-pytest src/test/test_app.py -v
+pytest src/test/test_main.py -v
 ```
 
 ### Run tests with coverage
 
 ```bash
 pip install pytest-cov
-pytest src/test/test_app.py --cov=src.app.app --cov-report=html
+pytest src/test/test_main.py --cov=src.app.main --cov-report=html
 ```
 
 ### Run specific tests
 
 ```bash
 # Only endpoint tests
-pytest src/test/test_app.py::TestURLInfoEndpoint -v
+pytest src/test/test_main.py::TestURLInfoEndpoint -v
 
 # Only normalization tests
-pytest src/test/test_app.py::TestURLNormalization -v
+pytest src/test/test_main.py::TestURLNormalization -v
 ```
