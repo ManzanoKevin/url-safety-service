@@ -1,6 +1,6 @@
 import pytest
 from fastapi.testclient import TestClient
-from app import app, check_url_safety, normalize_url, MALICIOUS_URLS
+from src.app.app import app, check_url_safety, normalize_url, MALICIOUS_URLS
 
 client = TestClient(app)
 

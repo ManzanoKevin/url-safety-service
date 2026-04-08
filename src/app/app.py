@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from typing import Dict
 import urllib.parse
 
@@ -65,6 +65,36 @@ def health_check():
     }
 
 
+@app.get("/urlinfo/1/{hostname_and_port}/{original_path_and_query:path}")
+async def check_url(hostname_and_port: str, original_path_and_query: str, request: Request):
+    """
+    Main endpoint to check URLs.
+    GET /urlinfo/1/{hostname_and_port}/{original_path_and_query}
+
+    Example:
+    GET /urlinfo/1/google.com/search?q=test
+    GET /urlinfo/1/malware.com/download
+    """
+
+    # Capture query string if present
+    query_string = request.url.query
+    full_path = original_path_and_query
+    if query_string:
+        full_path = f"{original_path_and_query}?{query_string}"
+
+    normalized_url = normalize_url(hostname_and_port, original_path_and_query)
+
+    is_malicious = check_url_safety(normalized_url)
+
+    return {
+        "url": f"{hostname_and_port}/{full_path}",
+        "normalized_url": normalized_url,
+        "malicious": is_malicious,
+        "safe": not is_malicious,
+        "message": "URL is malicious" if is_malicious else "URL is safe"
+    }
+
+
 @app.get("/urlinfo/1/{hostname_and_port:path}")
 async def check_url_without_path(hostname_and_port: str):
     """
@@ -76,30 +106,6 @@ async def check_url_without_path(hostname_and_port: str):
 
     return {
         "url": hostname_and_port,
-        "normalized_url": normalized_url,
-        "malicious": is_malicious,
-        "safe": not is_malicious,
-        "message": "URL is malicious" if is_malicious else "URL is safe"
-    }
-
-
-@app.get("/urlinfo/1/{hostname_and_port}/{original_path_and_query:path}")
-async def check_url(hostname_and_port: str, original_path_and_query: str):
-    """
-    Main endpoint to check URLs.
-    GET /urlinfo/1/{hostname_and_port}/{original_path_and_query}
-
-    Example:
-    GET /urlinfo/1/google.com/search?q=test
-    GET /urlinfo/1/malware.com/download
-    """
-    
-    normalized_url = normalize_url(hostname_and_port, original_path_and_query)
-
-    is_malicious = check_url_safety(normalized_url)
-
-    return {
-        "url": f"{hostname_and_port}/{original_path_and_query}",
         "normalized_url": normalized_url,
         "malicious": is_malicious,
         "safe": not is_malicious,
