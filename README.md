@@ -56,6 +56,40 @@ uvicorn src.app.main:app --host 0.0.0.0 --port 8000 --reload
 
 The service will be available at: `http://localhost:8000`
 
+### Option 3: Run with Docker
+
+#### Build the Docker image
+
+```bash
+docker build -t url-safety-service .
+```
+
+#### Run the container
+
+```bash
+docker run -d -p 8000:8000 --name url-safety-service url-safety-service
+```
+
+#### Stop the container
+
+```bash
+docker stop url-safety-service
+```
+
+#### Remove the container
+
+```bash
+docker rm url-safety-service
+```
+
+#### View logs
+
+```bash
+docker logs url-safety-service
+```
+
+The service will be available at: `http://localhost:8000`
+
 ## API Usage
 
 ### Main Endpoint
