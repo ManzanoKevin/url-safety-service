@@ -20,8 +20,8 @@ MALICIOUS_URLS = {
 
 def normalize_url(hostname_and_port: str, path_and_query: str) -> str:
     """
-    Normaliza la URL combinando hostname y path.
-    Decodifica caracteres URL-encoded.
+    Normalizes the URL by combining hostname and path.
+    Decodes URL-encoded characters.
     """
     decoded_path = urllib.parse.unquote(path_and_query)
 
@@ -32,14 +32,13 @@ def normalize_url(hostname_and_port: str, path_and_query: str) -> str:
 
 def check_url_safety(url: str) -> bool:
     """
-    Verifica si una URL es maliciosa.
-    Retorna True si es maliciosa, False si es segura.
+    Checks whether a URL is malicious.
+    Returns True if malicious, False if safe.
     """
     
     if url in MALICIOUS_URLS:
         return True
 
-    
     for malicious_url in MALICIOUS_URLS:
         if url.startswith(malicious_url.split("/")[0]):
             return True
@@ -49,9 +48,9 @@ def check_url_safety(url: str) -> bool:
 
 @app.get("/")
 def root():
-    """Endpoint de bienvenida"""
+    """Welcome endpoint"""
     return {
-        "service": "URL Lookup Service",
+        "service": "URL Safety Service",
         "version": "1.0.0",
         "status": "running"
     }
@@ -59,7 +58,7 @@ def root():
 
 @app.get("/health")
 def health_check():
-    """Health check para monitoreo"""
+    """Health check endpoint for monitoring"""
     return {
         "status": "healthy",
         "database_size": len(MALICIOUS_URLS)
@@ -69,7 +68,7 @@ def health_check():
 @app.get("/urlinfo/1/{hostname_and_port:path}")
 async def check_url_without_path(hostname_and_port: str):
     """
-    Endpoint para verificar solo hostname sin path adicional.
+    Endpoint to check only the hostname without additional path.
     GET /urlinfo/1/example.com
     """
     normalized_url = normalize_url(hostname_and_port, "")
@@ -87,10 +86,10 @@ async def check_url_without_path(hostname_and_port: str):
 @app.get("/urlinfo/1/{hostname_and_port}/{original_path_and_query:path}")
 async def check_url(hostname_and_port: str, original_path_and_query: str):
     """
-    Endpoint principal para verificar URLs.
+    Main endpoint to check URLs.
     GET /urlinfo/1/{hostname_and_port}/{original_path_and_query}
 
-    Ejemplo:
+    Example:
     GET /urlinfo/1/google.com/search?q=test
     GET /urlinfo/1/malware.com/download
     """
@@ -110,7 +109,7 @@ async def check_url(hostname_and_port: str, original_path_and_query: str):
 
 @app.get("/stats")
 def get_stats():
-    """Estadísticas del servicio"""
+    """Service statistics"""
     return {
         "total_malicious_urls": len(MALICIOUS_URLS),
         "sample_malicious_urls": list(MALICIOUS_URLS)[:5]
